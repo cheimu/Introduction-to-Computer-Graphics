@@ -14,9 +14,11 @@ const Minimal_Shape =
             // TODO: Edit the position and color here
             this.arrays.position = [
                 vec3(0, 0, 0), vec3(1, 0, 0), vec3(0, 1, 0),
+                vec3(1, 1, 0), vec3(1, 0, 0), vec3(0, 1, 0),
             ];
             this.arrays.color = [
                 color(1, 0, 0, 1), color(0, 1, 0, 1), color(0, 0, 1, 1),
+                color(1, 1, 0, 1), color(0, 1, 0, 1), color(0, 0, 1, 1),
             ];
         }
     }
