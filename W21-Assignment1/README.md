@@ -1,148 +1,102 @@
 # Assignment #1
 
+### Gettting Started:
 
-### Step 1:  Please follow these steps to run and modify your project:  
+Open the demo exactly as you did in Assignment 0: Run a dummy web server, navigate to the URL `localhost:8000`, observe the initial animation we provide, open Chrome developer tools, and perform the steps to map your local file folder as a Chrome workspace. 
 
-1. Go to your folder.  The easiest way is to right click the popup that downloaded it, then choose ``Show in Folder``.
+At that point you'll be safe to edit your files without your edits disappearing or changing the wrong files. Then, proceed as follows.
 
-   ![icons](docs/image-01.png)
+### Preliminary Steps - Using the Code Library
 
-2. You should see the file index.html in your folder.  You can already try clicking that open to see the code run on your machine... mostly.  This is a start; you'll see an animation.  But this isn't good enough.  Your animation is still unable to load local files (texture images, sounds, models) out of your own file-system, due to its safety protections against your web browser.
+In order to use our library, `tiny-graphics.js`, you the programmer must provide additional code: Three custom JavaScript classes. Each of the three will be a subclass of a different base class from tiny-graphics.js: `Shape`, `Shader`, and `Scene`. A `Shape` defines a 3D shape to draw, a `Shader` defines some code for coloring in triangles (perhaps as though they were illuminated by light sources), and a `Scene` class tells the 3D canvas and web page what you want to happen (usually, drawing a scene by placing shapes). The three subclasses must define certain methods correctly for the library to work, or nothing will get drawn.
 
-   ![triangle](docs/image-02.png)
+In order to get you started, we have provided examples of those custom subclasses in your code, and you only have to tweak them to do this assignment. One of the Shapes we give, `Cube`, is complete, while the other, `Cube_Outline` is left empty for you to fill in.
 
-3. Run a fake server. which lacks those security protections.  Do this by opening the file we gave you called ``host`` -  ``host.bat`` if you're Windows, ``host.command`` if your Mac. On Windows you can just double click the file open.
-   * **On Mac, you might get a security warning instead if you double-click.**  Instead, right click the files, then choose Open, or you can go into System Preferences/Security & Prinvacy/General and click 'Open Anyway'. You may possibly need to check the file permissions and set them to 744.
+The example scene we provided in `example/transform_sandbox.js` is a fully defined working example for you. The class, called `Transforms_Sandbox`, draws the extremely simple scene of boxes and balls you see when you initially run your Assignment files. It has the bare minimum to start using graphics to build a your first scene. Start your coding work there.
 
-   ![dialog](docs/image-03.png)
+### Experimenting with Transforms_Sandbox
 
-4. Look in the resulting console window.  If you can't find a message starting with ``Serving HTTP on ...``, your operating system might not have come with Python; go download and install that first -- use Google for help on that, then try our files again.
+Inside the `display()` method of class `Transforms_Sandbox`, you will see some lines of code that call "`draw()`" on a particular shape, causing one of that shape to appear in the scene. You will also see other lines of code that modify a `model_transform` variable that contains a 4 by 4 matrix. These lines of code perform translations, rotations and scales -- the main math operations you need to understand to get started with graphics. To call them, pass in a 3x1 vector (a `Vec`, or a regular JavaScript array of three floats). In the case of `rotation()`, a scalar (representing the angle in radians) must be also provided along with the `Vec` (representing the axis of rotation).
 
-   ![http server](docs/image-04.png)
+Read the code comments above the `Vec` and `Mat` classes in `tiny-graphics.js` to see how they work.
 
-5. Now you're hosting. Keep that window open.
+Note I: `vec3` and `vec4` can generate new `Vetors` of demension 3 and 4.
 
-6. Open a new window of Google Chrome.  Download it first if needed.
+Note II: JavaScript has no operator overloading, so operations like `+, -, *, +=, *=,` etc. will not compile if you try to use them on the vector and matrix types (`Vec` and `Mat`). Instead use `times()` as shown in the `Transforms_Sandbox` class definition, and assign its return value back into your matrix to incrementally modify it. These can be chained together like so:
 
-   ![url bar](docs/image-05.png)
+```javascript
+M = M.times( T ).times( R ).times( S );
+this.shapes.box.draw(context, program_state, M, this.materials.plastic.override(yellow));
+```
 
-7. Navigate Chrome to the url http://localhost:8000/
-That assumes that step 5's message said port 8000 - otherwise change the number in the URL to match.
+![image-0](docs/image-0.gif)
 
-8. Observe that your project shows up at this new URL.  That's where you'll access it from now on.
+Play with the code in `example/transforms_sandbox.js` and re-run your program until you are comfortable with the effects of changing numbers passed in to the transforms. Move around the calls to `draw()` to place new shapes. Put your operations into loops to draw lots of shapes and test your understanding of JavaScript.
 
-   ![triangle](docs/image-02.png)
+Once you are comfortable with this, begin implementing the graded requirements below (a stack of cubes). 
 
-Unfortunately, web developers in practice have to do that fake server thing pretty often to be able to work on their files locally. **Keep the .bat or .command program open while you work.**
+__Your final scene must go in the `assignment1.js` in order to be graded.__
 
+That class exposes its constructor to you, where you can see how it sets up the camera, lighting shader, and materials (which contain quantities related to how shapes and lights will interact), which are all defined there to help you do the actual assignment requirements.
 
-### Step 2:  Continue the next steps to begin viewing the code.  
+In order to select the scene `Assignment1` to display instead of `Transforms_Sandbox`, once you are ready to switch you must change your `main-scene.js, line:28` . Simply replace where the `Transforms_Sandbox` name with `Assignment1`. It will draw that instead.
 
-1. Although any text editor will work on our files, for this class you'll need to use the editor inside of Chrome, because of its debugging tools.  
+We have marked places in the code with "**// TODO**" to demark anywhere we intend for your final code to be in order to get points. All of these places you modify are inside the file `assignment1.js`.
 
-2. Resume with the open Chrome window from the previous step 8.
+### Graded Steps
 
-   ![triangle code](docs/image-06.png)
+#### Up to 50 points of credit. There is no partial credit for any individual requirement.
 
-3. Press F12 (Windows) or Cmd+Option+i (Mac) to open the Chrome developer tools panel (DevTools).
+Implement the assignment in clean and understandable code. Each required part must successfully draw and show up onscreen in order to count.
 
-4. You want DevTools to be able to take up the whole screen.  Undock it from your web page window.  Do this by clicking the ellipsis at the upper right corner, and selecting the first choice under ``Dock Side``.
+NOTE: Please use the default camera definition defined in the `assignment1.js`.
 
-   ![triangle code 2](docs/image-07.png)
+**If any parts are unclear, ask on Piazza.**
 
-5. Maximize both your web page window and DevTools windows.  Use the keyboard shortcut Alt+tab (Windows) or three finger swipe (Mac) to switch between them quickly.
+#### Point distribution:
 
-6. Click the ``Sources`` tab of the DevTools panel, towards the top of the screen.
+1. Modify our template, which displays WebGL in an HTML canvas, without introducing errors – **5 points.**
 
-   ![menu bar](docs/image-08.png)
+2. Display a stack of eight (8) unit cubes starting from the origin and extending upward – **10 points.**
 
-7. Without leaving the ``Sources`` outer tab, look at the navigator panel on the left.  This might be collapsed in the upper corner.  Regardless open the ``Page`` inner tab underneath it.
+    Instance each of the eight cubes from the same geometry data (we defined this as "box" in your scene's constructor function). Due to our other provided code in the constructor, the boxes will appear with a symmetric perspective projection, with square aspect ratio (not stretched or squeezed). The initial camera position at the given position (-5, 10, 30) is far back enough to view the scene. Note that to place a camera there is the opposite transform action that would be used to place a regular shape.
 
-8. You should see all the files you downloaded here.  Click them open to make sure you can see the code.  Now you can read it all here.
+3.  Make the stack of boxes sway like a blade of grass in the wind. It should sway back and forth three times per second. Be exact if you can. Here is a GIF, slowed down. It shows other parts of the assignment completed as well.
 
-   ![url bar](docs/image-10.png)
+    ![image-1](docs/image-1.gif)
 
-These steps and the following ones, may seem like a lot of work, but they are part of becoming a real web developer with a good workflow, as opposed to someone who just knows the language.  The biggest key of all to becoming a good developer is actually going be mastering the **debugger** feature, but first for this assignment let's just take it slow and set up our editor.
+    (a) Without passing through one another, the boxes must rotate over time to a maximum angle of `.04*Math.PI`. Place the hinge of each box's rotation motion exactly at the top right edge of the box underneath it. Each box touches the previous in exactly the same way and remains in constant contact, precisely connected only by the correct edge. The boxes may not separate from each other along this edge; no floating geometry is allowed – **10 points.**
 
+        Hint: Remember that you can chain more than just one translation and rotation together when adjusting your transformation between drawing shapes. 
 
-### Step 3:  Continue the next steps to begin modifying:
+    (b) Fluidity of your rotation motion matters. Functions of the form `f(t) = a + b*sin(w*t)` are useful for modeling periodic motion, where "`a`" is large enough that the rotation angle does not go negative and cause boxes to collide. Use `program_state.animation_time` for `t`, which is how long the program's been running in milliseconds – **4 points.**
 
-1. Change from the ``Page`` inner tab to the ``Filesystem`` inner tab, which might be collapsed behind the arrow.  This one should be empty.
+    (c) Iteratively place the rest of the moving box segments on top of one another to complete the swaying motion. Use a hierarchical approach - each box's transform is the "child" of the previous transform, derived from its matrix value – **2 points.**
 
-   ![filesystem](docs/image-11.png)
+        Hint: To make structures that have a parent-child hierarchy like this, you must incrementally create your transform using `times()` to **post-multiply** each new term onto the right side of your matrix variable. Do this to incrementally change it from the value that drew the previous (parent) box. Never do a pre-multiply for this assignment; for certain reasons that's not as useful for designing structures that you think of as a hierarchy of shapes.
 
-2. Drag and drop your local file folder from your computer's folder navigator straight into the middle of the DevTools window.  If you can't figure out how to drag between maximized windows (you can), just use the manual ``add folder to workspace`` button and choose your folder.
-Either way this will complete the mapping between your real local files and the fake ones over the network.
+    You should learn to organize your code into functions, instead of describing your whole scene in `display()`. For part (c) we recommend moving your code for drawing one box into the blank `draw_box()` method, and then calling it many times from `display()` using a for loop. Changing the function signature (arguments) to `draw_box()` is allowed, since it may be necessary to know which box (numbered from bottom to top) you're drawing for color purposes.
 
-   ![copy](docs/image-12.png)
+    (d) Fill in code inside your class method `make_control_panel()` to implement a button to help us with grading. To do this, call `key_triggered_button()` as already shown inside the method, and make sure the second argument is [ "m" ] so that we can press the m key to test your button. Fill in the third argument, the function that gets executed each button press, so as to make it toggle the swaying motion on and off. When the swaying is turned off, your blade of grass must be extended out to the maximum possible angle of `.04*Math.PI` so that we can see the gaps between your boxes along the left side – **2 points.**
 
-   * It's going to ask you for permission to modify your local files.  Hit yes.
-    
-     ![allow](docs/image-13.png)
-    
-   * If this doesn't happen as described, try to find help on setting your local folder as a workspace.
+4. (a) Color each box differently from the one underneath, for contrast. So that colors stay the same from one frame to the next, base your colors on persistent variables you store in your class, which means you'll use the "this" keyword to declare them – **7 points.**
 
-3. Observe the little green dots next to each file in the ``Filesystem`` subtab.  These green dots verify that your Chrome has matched your fake server to your local files.
+   (b) Fill in the `set_colors()` function to somehow cause your class's colors to reset to different values. Once you do this, pressing the 'c' key (which already calls `set_colors`) should cycle the colors between the cubes – **2 points.**
 
-4. Sometimes a green dot is missing -- especially on index.html.   That is dangerous; the file is not mapped right and any changes you make to it will be lost.  When green dots are missing, hit ctrl+F5 (Windows) or cmd+F5 (Mac) to do a hard refresh.  This re-loads them from your local files and re-maps them again.
+5. Draw each cube’s outline (the edges) in white. For this, you will need to design a new `Shape` subclass. Fill in the empty parts we left in the `Cube_Outline` class, defined in your `assignment1.js` file. It will be like your `Cube`'s definition above it, except with your own brand new arrays. Each vertex gets a position and a color (`color` replaces `normal` in this example). Define the positions of your cube outline as x,y,z coordinates of the cube points. Order them in pairs, so that each pair is one edge of the outline. You may NOT have any extra edges going across diagonals. Set each color value in the `color` array to full white - making sure the list has as many entries as the `positions` list. Do not make an indices list - instead use "`this.indexed = false`".
 
-   ![reload](docs/image-15.png)
+    (a) To actually draw your outline, you will need to call `draw()` on it and pass in a material that is compatible with it. That's because you just changed its available `Shape` fields to "positions" and "color", and so the type of `Shader` we use on it has to know what to do with that information. The variable we called "`this.white`" already holds such a proper, compatible material -- so just pass that one in as your third parameter to `draw()` your outline. This should draw it using exactly the colors you made for it (white colors). Lastly, to actually draw lines instead of triangles (letting it know that there's __pairs__ of vertices instead of triples), you must pass in the string "LINES" as the last argument to `draw()` – **6 points.**
 
-Be aware that for as long as you have DevTools open, back at browser window you have unlocked some new ways to refresh:  Right-click the refresh button to see them.
+    (b) Rather than drawing your outline at all times, fill in code inside your class method `make_control_panel()` to implement another button. Call `key_triggered_button()` as shown, and make sure the second argument is [ "o" ] so that we can press the o key to test your button. Fill in the third argument, the function that gets executed each button press, so as to toggle a flag that you'll use to turn the outline on and off. When the outline is off, draw the boxes normally (colors, lighting, etc.). When the outline is on, draw the outline instead on all boxes (it's OK to skip doing this for the bottom-most box since it's special, as explained below) – **2 points.**
 
-5. If the green dots still don't show up, delete what's in the workspace area and try again until they appear.
+#### Extra Credit: Each can be attempted individually. There is no partial credit on any individual extra credit.
 
-6. Now you can edit the files directly inside Chrome, in the DevTools ``Sources`` tab.
-   * As long as you make changes under ``Sources`` and not ``Elements``, your changes will now persist in your own local files even after page refreshes.
-   * You should avoid ever accidentally typing in the ``Elements`` tab.  That's only for temporary HTML stuff your code generates.
+1. Triangle strips are a common graphics primitive. Implement the very bottom box's geometry as a single triangle strip primitive. This is like making a cube that can unfold into a single line of triangles.
 
-Editing directly in Chrome like this is the workflow we will use.  One reason is that your code immediately changes its behavior as you type.  Even when it's in the middle of running, or as soon as you un-pause it in the debugger.  Elements will move around on the page immediately when you make changes.  This allows you to you dynamically test new code without re-starting your whole animation and losing your place -- without having to wait for your timed scenes to progress to that point again -- or without having to enter the right inputs again.
+   Create a new `Shape` subclass with whatever correct entries in the `position` and `indices` lists that will make that happen. Give each vertex a `normal` that is simply equal to the position. When calling `draw()` to make this box, pass in the string "TRIANGLE_STRIP" for the fifth argument so that the graphics card uses triangle strip indexing. This box should appear lit up differently than the others, especially near edges as you move the camera around it, because of its unusual layout – **2 points.**
 
+2. Scale your boxes so that instead of being unit cubes, they are stretched to 1.5x their length only along the Y axis. Adjust your translations accordingly so that the correct hinge contact points are maintained throughout the swaying motion. Again, no floating geometry is allowed. Neither are any shearing effects that deform the boxes to non-right angles during motion. Prepare your left-to-right chain of transformations accordingly for each separate shape so that those things cannot happen – **3 points.**
 
-### Step 4:  Continue the next steps to begin using Chrome as a code editor:
+### Submitting Assignment:
 
-1. If you've never learned your way around an IDE for editing code, now is the time to.  Chrome's code editor is kind of in-between in terms of quality:  Better than Windows Notepad or TextEdit, but not quite as good as Notepad++ or Microsoft VSCode.  In order for it to be better than crudely opening your code in notepad, you need to know what basic features to expect from a text editor.  Let's learn them.
-
-2. Find and try each of the following code editing commands once. They're found in that DevTools Sources tab.
-   * Block indent / unindent (Tab and Shift+Tab)
-   * Block comment / uncomment (Ctrl+/ or Cmd+/)
-     ** For both of the above bullet points, try it on multiple highlighted lines at once.
-   * Zoom in/out while reading
-     ** Hold down Ctrl (Windows) or Cmd (Mac) and then press plus, minus, or zero to adjust.
-     ** Use this fit a comfortable amount of code on-screen for you to read at once.
-   * find (Ctrl+f or Cmd+f)
-   * find-and-replace
-   
-     ![find and replace](docs/image-16.png)
-     
-     ** For both of the above bullet points, note that you don't have to find specific or exact strings; Chrome supports matching **regular expressions**, for finding all text of a more general pattern.  That's the .* button.
-
-
-#### Step 5:  Continue the next steps to complete homework 1:
-
-1. With our animation running in Chrome, with DevTools still open to the Sources tab.  Open the file ``assignment1.js``.  This is under the ``Filesystem`` tab of the navigator panel, which might be collapsed in the upper corner.
-
-2. If there's no green dot next to  ``assignment1.js``, fix it as described above.
-
-3. On line 16, add the following three items to the JavaScript array, which is all the text enclosed by square brackets [ ].  Add a comma to separate from previous items in the array.
-
-   ```js
-   vec3(1, 1, 0), vec3(1, 0, 0), vec3(0, 1, 0)
-   ```
-5. On line 19, add the following three items to the JavaScript array:
-   
-   ```js
-   color(1, 1, 0, 1), color(0, 1, 0, 1), color(0, 0, 1, 1)
-   ```
-6. Save the file, and reload the page (using Ctrl+Shift+r for Windows, Cmd+Shift+r for Mac).  Switch back to look at your web page window.  The triangle should be a square now, because you just attached a second triangle to it.  If so, your edit worked and your file is saved.  If not, check for green dots and fix it as per above.
-
-   ![square](docs/image-19.png)
-
-7. If you typed the wrong thing, you could get console errors, a blank web page, or missing triangles.  Later on we'll show you how to use the debugger and the console together to approach errors in a smart way.  For now, just type it right.
-
-8. Your files should be ready to turn in now.
-
-
-#### Step 7:  Submit the assignment:
-
-- Compress the current folder to `.zip` format and submit it to CCLE. 
+1. Once you are finished working, it is time to submit it to CCLE.

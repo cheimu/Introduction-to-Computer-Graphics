@@ -310,7 +310,7 @@ const Vector4 = tiny.Vector4 =
         }
 
         // In-fix operations: Use these for more readable math expressions.
-        equals() {
+        equals(b) {
             return this[0] == b[0] && this[1] == b[1] && this[2] == b[2] && this[3] == b[3]
         }
 
@@ -1014,8 +1014,9 @@ const Container = tiny.Container =
         // To override, simply pass in "replacement", a JS Object of keys/values you want to override, to generate
         // a new object.  For shorthand you can leave off the key and only provide a value (pass in directly as
         // "replacement") and a guess will be used for which member you want overridden based on type.
-        override(replacement) {
-            // override(): Generate a copy by value, replacing certain properties.
+        override(replacement)
+        // override(): Generate a copy by value, replacing certain properties.
+        {
             return this.helper(replacement, Object.create(this.constructor.prototype))
         }
 
