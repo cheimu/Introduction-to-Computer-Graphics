@@ -29,6 +29,15 @@ class Cube_Outline extends Shape {
         // When a set of lines is used in graphics, you should think of the list entries as
         // broken down into pairs; each pair of vertices will be drawn as a line segment.
         // Note: since the outline is rendered with Basic_shader, you need to redefine the position and color of each vertex
+        //this.positions.push(...Vec.cast(
+        this.arrays.position = Vector3.cast(
+            [-1, -1, -1], [-1,  1, -1], [-1,  1, -1], [ 1,  1, -1], [ 1,  1, -1], [ 1, -1, -1],[ 1, -1, -1], [-1, -1, -1],
+            [-1, -1,  1], [-1,  1,  1], [-1,  1,  1], [ 1,  1,  1], [ 1,  1,  1], [ 1, -1,  1], [ 1, -1,  1], [-1, -1,  1],
+            [-1, -1, -1], [-1, -1,  1], [-1,  1, -1], [-1,  1,  1], [ 1,  1, -1], [ 1,  1,  1], [ 1, -1, -1], [ 1, -1,  1]);
+        this.arrays.color = Array(24).fill(color(1, 1, 1, 1));
+        this.indices.push(0, 1, 2, 1, 3, 2, 4, 5, 6, 5, 7, 6, 8, 9, 10, 9, 11, 10, 12, 13,
+            14, 13, 15, 14, 16, 17, 18, 17, 19, 18, 20, 21, 22, 21, 23, 22);
+        this.indexed = false;
     }
 }
 
@@ -90,8 +99,25 @@ export class Assignment1 extends Base_Scene {
      * This gives you a very small code sandbox for editing a simple scene, and for
      * experimenting with matrix transformations.
      */
+    constructor() {
+        super();
+        this.OutlineFlag = false;
+        this.StillFlag = true;
+
+        /* Set up box colors. */
+        this.colorTable = [color(1,1,1,1), color(1,0,0,1), color(1,.5,0,1), color(0,1,1,1),
+                           color(0,1,0,1), color(0,0,1,1), color(0,.6,.6,1), color(1,.7,.8,1)];
+        this.set_colors();
+        this.maxAngle = 0.04 * Math.PI;
+        this.numOfSwing = 3;
+        this.lights = [new Light(vec4(0, 5, 5, 1), color(1, 1, 1, 1), 1000)];
+
+    }
+
     set_colors() {
         // TODO:  Create a class member variable to store your cube's colors.
+        let tmp = this.colorTable.shift();
+        this.colorTable.push(tmp);
     }
 
     make_control_panel() {
@@ -100,18 +126,30 @@ export class Assignment1 extends Base_Scene {
         // Add a button for controlling the scene.
         this.key_triggered_button("Outline", ["o"], () => {
             // TODO:  Requirement 5b:  Set a flag here that will toggle your outline on and off
+            this.OutlineFlag ^= 1;
         });
         this.key_triggered_button("Sit still", ["m"], () => {
             // TODO:  Requirement 3d:  Set a flag here that will toggle your swaying motion on and off.
+            this.StillFlag ^= 1;
         });
     }
 
-    draw_box(context, program_state, model_transform) {
+    draw_box(context, program_state, model_transform, idx) {
         // TODO:  Helper function for requirement 3 (see hint).
         //        This should make changes to the model_transform matrix, draw the next box, and return the newest model_transform.
-
+        this.shapes.cube.draw(context, program_state, model_transform,
+                 this.materials.plastic.override({color: this.colorTable[idx]}));
         return model_transform;
     }
+
+    draw_outline(context, program_state, model_transform) {
+        this.shapes.outline.draw(context, program_state, model_transform, this.white, "LINES");
+        return model_transform;
+    }
+
+//     rotation_angle_function(tick) {
+//         return ((this.maxAngle/2) + ((this.maxAngle/2) * Math.sin(this.numOfSwing * Math.PI * tick)));
+//     }
 
     display(context, program_state) {
         super.display(context, program_state);
@@ -119,7 +157,23 @@ export class Assignment1 extends Base_Scene {
         let model_transform = Mat4.identity();
 
         // Example for drawing a cube, you can remove this line if needed
-        this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override({color:blue}));
+        // this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override({color:blue}));
         // TODO:  Draw your entire scene here.  Use this.draw_box( graphics_state, model_transform ) to call your helper.
+        const t = this.t = program_state.animation_time / 1000;
+        let curAngle = (this.maxAngle/2) + ((this.maxAngle/2) * Math.sin(this.numOfSwing * Math.PI * t));
+        if (!this.StillFlag) {
+            curAngle = this.maxAngle;
+        }
+        // base box without rotation;
+        model_transform = model_transform.times(Mat4.translation(1, 1, 0))
+             .times(Mat4.scale(1, 1, 1))
+             .times(Mat4.translation(-1, 1, 0));
+        this.draw_box(context, program_state, model_transform, 0)
+        for (let i = 1; i < 8; i++) {
+            model_transform = model_transform.times(Mat4.translation(1, 1, 0))
+                .times(Mat4.rotation(curAngle, 0, 0, -1))
+                .times(Mat4.translation(-1, 1, 0));
+            this.OutlineFlag? this.draw_outline(context, program_state, model_transform) : this.draw_box(context, program_state, model_transform, i);
+        }                       
     }
 }
