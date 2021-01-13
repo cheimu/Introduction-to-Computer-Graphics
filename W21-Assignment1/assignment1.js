@@ -35,7 +35,7 @@ class Cube_Outline extends Shape {
             [-1, -1,  1], [-1,  1,  1], [-1,  1,  1], [ 1,  1,  1], [ 1,  1,  1], [ 1, -1,  1], [ 1, -1,  1], [-1, -1,  1],
             [-1, -1, -1], [-1, -1,  1], [-1,  1, -1], [-1,  1,  1], [ 1,  1, -1], [ 1,  1,  1], [ 1, -1, -1], [ 1, -1,  1]);
         this.arrays.color = Array(24).fill(color(1, 1, 1, 1));
-        this.indexed = false;
+        this.indices = false;
     }
 }
 
