@@ -160,14 +160,14 @@ export class Assignment1 extends Base_Scene {
         // this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override({color:blue}));
         // TODO:  Draw your entire scene here.  Use this.draw_box( graphics_state, model_transform ) to call your helper.
         const t = this.t = program_state.animation_time / 1000;
-        // let curAngle = (this.maxAngle/2) + ((this.maxAngle/2) * Math.sin(this.numOfSwing * Math.PI * t));
         let curAngle = this.rotation_angle_function(this.numOfSwing, t);
         if (!this.StillFlag) {
             curAngle = this.maxAngle;
         }
         // base box without rotation;
         model_transform = model_transform.times(Mat4.translation(1, 1, 0))
-             .times(Mat4.scale(1, 1, 1));
+             .times(Mat4.scale(1, 1, 1))
+             .times(Mat4.translation(-1, 1, 0));
         this.draw_box(context, program_state, model_transform, 0)
         for (let i = 1; i < 8; i++) {
             model_transform = model_transform.times(Mat4.translation(1, 1, 0))
