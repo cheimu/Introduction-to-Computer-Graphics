@@ -107,7 +107,7 @@ export class Assignment1 extends Base_Scene {
                            color(0,1,0,1), color(0,0,1,1), color(0,.6,.6,1), color(1,.7,.8,1)];
         this.set_colors();
         this.maxAngle = 0.04 * Math.PI;
-        this.numOfSwing = 3;
+        this.numOfSwing = 5;
         this.lights = [new Light(vec4(0, 5, 5, 1), color(1, 1, 1, 1), 1000)];
 
     }
@@ -147,9 +147,9 @@ export class Assignment1 extends Base_Scene {
         return model_transform;
     }
 
-//     rotation_angle_function(tick) {
-//         return ((this.maxAngle/2) + ((this.maxAngle/2) * Math.sin(this.numOfSwing * Math.PI * tick)));
-//     }
+    rotation_angle_function(frequency, t) {
+        return ((this.maxAngle/2) + ((this.maxAngle/2) * Math.sin(frequency * Math.PI * t)));
+    }
 
     display(context, program_state) {
         super.display(context, program_state);
@@ -160,7 +160,8 @@ export class Assignment1 extends Base_Scene {
         // this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override({color:blue}));
         // TODO:  Draw your entire scene here.  Use this.draw_box( graphics_state, model_transform ) to call your helper.
         const t = this.t = program_state.animation_time / 1000;
-        let curAngle = (this.maxAngle/2) + ((this.maxAngle/2) * Math.sin(this.numOfSwing * Math.PI * t));
+        // let curAngle = (this.maxAngle/2) + ((this.maxAngle/2) * Math.sin(this.numOfSwing * Math.PI * t));
+        let curAngle = this.rotation_angle_function(this.numOfSwing, t);
         if (!this.StillFlag) {
             curAngle = this.maxAngle;
         }
