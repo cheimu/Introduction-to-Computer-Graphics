@@ -92,7 +92,7 @@ class Base_Scene extends Scene {
             Math.PI / 4, context.width / context.height, 1, 100);
 
         // *** Lights: *** Values of vector or point lights.
-        const light_position = vec4(0, 5, 15, 1);
+        const light_position = vec4(0, 5, 5, 1);
         program_state.lights = [new Light(light_position, color(1, 1, 1, 1), 1000)];
     }
 }
@@ -108,6 +108,8 @@ export class Assignment1 extends Base_Scene {
         super();
         this.OutlineFlag = false;
         this.StillFlag = false;
+        this.ExtraCredit1Flag = false;
+        this.ExtraCredit2Flag = false;
 
         /* Set up box colors. */
         this.colorTable = [color(1,1,1,1), color(1,0,0,1), color(1,.5,0,1), color(0,1,1,1),
@@ -134,6 +136,14 @@ export class Assignment1 extends Base_Scene {
         this.key_triggered_button("Sit still", ["m"], () => {
             // TODO:  Requirement 3d:  Set a flag here that will toggle your swaying motion on and off.
             this.StillFlag ^= 1;
+        });
+        this.key_triggered_button("Extra Credit 1: Draw Triangle Strip", ["d"], () => {
+            // TODO:  Requirement extra credit 1:  
+            this.ExtraCredit1Flag ^= 1;
+        });
+        this.key_triggered_button("Extra Credit 2: Scale the base box to 1.5x", ["s"], () => {
+            // TODO:  Requirement extra credit 2: Scale the box to 1.5x along the Y axis.
+            this.ExtraCredit2Flag ^= 1;
         });
     }
 
@@ -176,11 +186,11 @@ export class Assignment1 extends Base_Scene {
             curAngle = this.maxAngle;
         }
         // base box without rotation;
+        let scaleFactor = this.ExtraCredit2Flag? 1.5: 1;
         model_transform = model_transform.times(Mat4.translation(1, 1, 0))
-             .times(Mat4.scale(1, 1, 1))
+             .times(Mat4.scale(1, scaleFactor, 1))
              .times(Mat4.translation(-1, 1, 0));
-        // this.draw_box(context, program_state, model_transform, 0)
-        this.draw_triangle_strip(context, program_state, model_transform, 0);
+        this.ExtraCredit1Flag? this.draw_triangle_strip(context, program_state, model_transform, 0): this.draw_box(context, program_state, model_transform, 0);
         for (let i = 1; i < 8; i++) {
             model_transform = model_transform.times(Mat4.translation(1, 1, 0))
                 .times(Mat4.rotation(curAngle, 0, 0, -1))
