@@ -121,8 +121,19 @@ export class Assignment1 extends Base_Scene {
 
     set_colors() {
         // TODO:  Create a class member variable to store your cube's colors.
-        let tmp = this.colorTable.shift();
-        this.colorTable.push(tmp);
+        this.colorTable = [color(this.random_number_generator(), this.random_number_generator(), this.random_number_generator(), 1),
+            color(this.random_number_generator(), this.random_number_generator(), this.random_number_generator(), 1),
+            color(this.random_number_generator(), this.random_number_generator(), this.random_number_generator(), 1),
+            color(this.random_number_generator(), this.random_number_generator(), this.random_number_generator(), 1),
+            color(this.random_number_generator(), this.random_number_generator(), this.random_number_generator(), 1),
+            color(this.random_number_generator(), this.random_number_generator(), this.random_number_generator(), 1),
+            color(this.random_number_generator(), this.random_number_generator(), this.random_number_generator(), 1),
+            color(this.random_number_generator(), this.random_number_generator(), this.random_number_generator(), 1),
+        ];
+    }
+
+    random_number_generator() {
+        return Math.random() * (0.0 - 1.5) + 1.5
     }
 
     make_control_panel() {
@@ -137,11 +148,11 @@ export class Assignment1 extends Base_Scene {
             // TODO:  Requirement 3d:  Set a flag here that will toggle your swaying motion on and off.
             this.StillFlag ^= 1;
         });
-        this.key_triggered_button("Extra Credit 1: Draw Triangle Strip", ["d"], () => {
+        this.key_triggered_button("Extra Credit 1: Draw Triangle Strip", ["g"], () => {
             // TODO:  Requirement extra credit 1:  
             this.ExtraCredit1Flag ^= 1;
         });
-        this.key_triggered_button("Extra Credit 2: Scale the base box to 1.5x", ["s"], () => {
+        this.key_triggered_button("Extra Credit 2: Scale the Y axis of base box 1.5x", ["l"], () => {
             // TODO:  Requirement extra credit 2: Scale the box to 1.5x along the Y axis.
             this.ExtraCredit2Flag ^= 1;
         });
