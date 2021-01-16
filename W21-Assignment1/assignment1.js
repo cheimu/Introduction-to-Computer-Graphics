@@ -41,8 +41,14 @@ class Cube_Outline extends Shape {
 
 class Cube_Single_Strip extends Shape {
     constructor() {
-        super("position", "normal");
+        super("positions", "normals");
         // TODO (Extra credit part I)
+        this.arrays.position = Vector3.cast(
+            [-1, -1,  1], [ 1, -1,  1], [-1,  1,  1], [ 1,  1,  1], [-1, -1, -1], [ 1, -1, -1], [-1,  1, -1], [ 1,  1, -1]);
+        this.arrays.normal = Vector3.cast(
+            [-1, -1,  1], [ 1, -1,  1], [-1,  1,  1], [ 1,  1,  1], [-1, -1, -1], [ 1, -1, -1], [-1,  1, -1], [ 1,  1, -1]);
+        this.indices.push(0, 1, 3, 0, 2, 3, 0, 2, 4, 2, 4, 6,2, 3, 6, 3, 6, 7, 0, 1, 4, 
+            1, 4, 5, 1, 3, 5, 3, 5, 7, 4, 5, 7, 4, 6, 7);
     }
 }
 
@@ -60,6 +66,7 @@ class Base_Scene extends Scene {
         this.shapes = {
             'cube': new Cube(),
             'outline': new Cube_Outline(),
+            'single_strip': new Cube_Single_Strip(),
         };
 
         // *** Materials
@@ -85,7 +92,7 @@ class Base_Scene extends Scene {
             Math.PI / 4, context.width / context.height, 1, 100);
 
         // *** Lights: *** Values of vector or point lights.
-        const light_position = vec4(0, 5, 5, 1);
+        const light_position = vec4(0, 5, 15, 1);
         program_state.lights = [new Light(light_position, color(1, 1, 1, 1), 1000)];
     }
 }
@@ -100,7 +107,7 @@ export class Assignment1 extends Base_Scene {
     constructor() {
         super();
         this.OutlineFlag = false;
-        this.StillFlag = true;
+        this.StillFlag = false;
 
         /* Set up box colors. */
         this.colorTable = [color(1,1,1,1), color(1,0,0,1), color(1,.5,0,1), color(0,1,1,1),
@@ -108,8 +115,6 @@ export class Assignment1 extends Base_Scene {
         this.set_colors();
         this.maxAngle = 0.04 * Math.PI;
         this.numOfSwing = 5;
-        this.lights = [new Light(vec4(0, 5, 5, 1), color(1, 1, 1, 1), 1000)];
-
     }
 
     set_colors() {
@@ -147,6 +152,12 @@ export class Assignment1 extends Base_Scene {
         return model_transform;
     }
 
+    draw_triangle_strip(context, program_state, model_transform, idx) {
+        this.shapes.single_strip.draw(context, program_state, model_transform,
+                this.materials.plastic.override({color: this.colorTable[idx]}), "TRIANGLE_STRIP");
+        return model_transform;      
+    }
+
     rotation_angle_function(frequency, t) {
         return ((this.maxAngle/2) + ((this.maxAngle/2) * Math.sin(frequency * Math.PI * t)));
     }
@@ -161,14 +172,15 @@ export class Assignment1 extends Base_Scene {
         // TODO:  Draw your entire scene here.  Use this.draw_box( graphics_state, model_transform ) to call your helper.
         const t = this.t = program_state.animation_time / 1000;
         let curAngle = this.rotation_angle_function(this.numOfSwing, t);
-        if (!this.StillFlag) {
+        if (this.StillFlag) {
             curAngle = this.maxAngle;
         }
         // base box without rotation;
         model_transform = model_transform.times(Mat4.translation(1, 1, 0))
              .times(Mat4.scale(1, 1, 1))
              .times(Mat4.translation(-1, 1, 0));
-        this.draw_box(context, program_state, model_transform, 0)
+        // this.draw_box(context, program_state, model_transform, 0)
+        this.draw_triangle_strip(context, program_state, model_transform, 0);
         for (let i = 1; i < 8; i++) {
             model_transform = model_transform.times(Mat4.translation(1, 1, 0))
                 .times(Mat4.rotation(curAngle, 0, 0, -1))
