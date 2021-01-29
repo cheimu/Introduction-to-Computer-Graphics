@@ -39,12 +39,12 @@ export class Assignment2 extends Scene {
                 ambient: .5, diffusivity: 0.1, specularity: 0.1,
                 texture: new Texture("assets/stars.png")
             }),
-            text: new Material(new Textured_Phong(), {
+            text: new Material(new Texture_Rotate(), {
                 color: color(0, 0, 1, 1),
                 ambient: .6, diffusivity: 0.2, specularity: 0.2,
                 texture: new Texture("assets/text.png")
             }),
-            star: new Material(new Textured_Phong(), {
+            star: new Material(new Texture_Scroll_X(), {
                 color: color(1, 1, 1, 1),
                 ambient: .4, diffusivity: 0.2, specularity: 0.3,
                 texture: new Texture("assets/stars.png")
@@ -109,7 +109,8 @@ class Texture_Scroll_X extends Textured_Phong {
             
             void main(){
                 // Sample the texture image in the correct place:
-                vec4 tex_color = texture2D( texture, f_tex_coord);
+                vec2 curr_coord = vec2(f_tex_coord.x-animation_time*2.0, f_tex_coord.y);
+                vec4 tex_color = texture2D( texture, curr_coord);
                 if( tex_color.w < .01 ) discard;
                                                                          // Compute an initial (ambient) color:
                 gl_FragColor = vec4( ( tex_color.xyz + shape_color.xyz ) * ambient, shape_color.w * tex_color.w ); 
@@ -129,7 +130,12 @@ class Texture_Rotate extends Textured_Phong {
             uniform float animation_time;
             void main(){
                 // Sample the texture image in the correct place:
-                vec4 tex_color = texture2D( texture, f_tex_coord );
+                float pi = 3.1415926;
+                float angle = 15.0 * 2.0 * pi * animation_time / (60.0);
+                mat2 rotation_m = mat2(cos(angle), sin(angle), -sin(angle), cos(angle));
+                // model*translation*rotation*-translation
+                vec2 curr_coord = rotation_m * (f_tex_coord-0.5) + 0.5 ;
+                vec4 tex_color = texture2D( texture, curr_coord);
                 if( tex_color.w < .01 ) discard;
                                                                          // Compute an initial (ambient) color:
                 gl_FragColor = vec4( ( tex_color.xyz + shape_color.xyz ) * ambient, shape_color.w * tex_color.w ); 
