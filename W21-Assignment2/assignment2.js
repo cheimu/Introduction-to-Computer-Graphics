@@ -4,7 +4,7 @@ const {
     Vector, Vector3, vec, vec3, vec4, color, hex_color, Shader, Matrix, Mat4, Light, Shape, Material, Scene, Texture,
 } = tiny;
 
-const {Cube, Axis_Arrows, Textured_Phong} = defs
+const {Cube, Axis_Arrows, Textured_Phong, ExtraCredit} = defs
 
 export class Assignment2 extends Scene {
     /**
@@ -21,7 +21,8 @@ export class Assignment2 extends Scene {
         this.shapes = {
             box_1: new Cube(),
             box_2: new Cube(),
-            axis: new Axis_Arrows()
+            axis: new Axis_Arrows(),
+            extra_credit: new ExtraCredit()
         }
         console.log(this.shapes.box_1.arrays.texture_coord)
         this.shapes.box_2.arrays.texture_coord.forEach(p => p.scale_by(2));
@@ -42,17 +43,23 @@ export class Assignment2 extends Scene {
             text: new Material(new Texture_Rotate(), {
                 color: color(0, 0, 1, 1),
                 ambient: .6, diffusivity: 0.2, specularity: 0.2,
-                texture: new Texture("assets/text.png")
+                texture: new Texture("assets/text.png", "NEAREST")
             }),
             star: new Material(new Texture_Scroll_X(), {
                 color: color(1, 1, 1, 1),
                 ambient: .4, diffusivity: 0.2, specularity: 0.3,
-                texture: new Texture("assets/stars.png")
+                texture: new Texture("assets/stars.png", "LINEAR_MIPMAP_LINEAR")
+            }),
+            rgb: new Material(new Textured_Phong(), {
+                color: color(1, 1, 1, 1),
+                ambient: .4, diffusivity: 0.2, specularity: 0.3,
+                texture: new Texture("assets/rgb.jpg", "LINEAR_MIPMAP_LINEAR")
             }),
         }
         
         this.box_1 = {};
         this.box_2 = {};
+        this.extra = {};
         this.initial_camera_location = Mat4.look_at(vec3(0, 10, 20), vec3(0, 0, 0), vec3(0, 1, 0));
     }
 
@@ -95,6 +102,11 @@ export class Assignment2 extends Scene {
         if (this.RotationFlag) this.box_2.transform = this.box_2.transform.times(Mat4.rotation(angle_2*t, 0, 1, 0)); 
         this.box_2.transform = this.box_2.transform.times(Mat4.translation(2, 0, 0));
         this.shapes.box_2.draw(context, program_state, this.box_2.transform, this.materials.star );
+
+        /* extra_credit */
+        this.extra.transform = Mat4.identity().times(Mat4.translation(0, -3.5, 0)).times(Mat4.scale(0.3, 0.3, 0.3));
+        this.shapes.extra_credit.draw(context, program_state, this.extra.transform, this.materials.rgb );
+
     }
 }
 

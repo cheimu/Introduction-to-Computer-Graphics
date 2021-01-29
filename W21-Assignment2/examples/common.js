@@ -156,6 +156,41 @@ const Cube = defs.Cube =
     }
 
 
+const ExtraCredit = defs.ExtraCredit = 
+    class ExtraCredit extends Shape {
+        constructor() {
+            super("position", "normal", "texture_coord");
+            // Loop 3 times (for each axis), and inside loop twice (for opposing cube sides):
+            Cube.insert_transformed_copy_into(this, [], Mat4.identity()
+                .times(Mat4.translation(-3, 0, 0))
+                .times(Mat4.rotation(10, 0, 0, 5))
+                .times(Mat4.scale(3, 1, 1)));
+            Cube.insert_transformed_copy_into(this, [], Mat4.identity()
+                .times(Mat4.translation(3, 0, 0))
+                .times(Mat4.rotation(-10, 0, 0, 5))
+                .times(Mat4.scale(3, 1, 1)));
+            Subdivision_Sphere.insert_transformed_copy_into(this, [3], Mat4.identity()
+                .times(Mat4.translation(0, 0, 0))
+                .times(Mat4.scale(2,2,2))
+                .times(Mat4.translation(0, 2, 0)));
+
+            let cube_transform = {};
+            for(var i = -1; i <= 1; i++) {
+                for (var k = -1; k <= 1; k++) {
+                  cube_transform = Mat4.identity().times( Mat4.scale( 0.4, 0.4, 0.4 ) );
+                  for(var c = 0; c < 8; c++) {
+                    cube_transform = cube_transform
+                      .times(Mat4.scale(1, 1, 1))
+                      .times(Mat4.rotation(i*5, 0, 2, k+0.5))
+                      .times(Mat4.translation(i, 2, k));
+                    Cube.insert_transformed_copy_into( this, [], cube_transform );
+                  }
+              }
+            }
+        }
+    }
+
+
 const Subdivision_Sphere = defs.Subdivision_Sphere =
     class Subdivision_Sphere extends Shape {
         // **Subdivision_Sphere** defines a Sphere surface, with nice uniform triangles.  A subdivision surface
