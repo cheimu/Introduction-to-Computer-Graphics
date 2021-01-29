@@ -58,6 +58,10 @@ export class Assignment2 extends Scene {
 
     make_control_panel() {
         // TODO:  Implement requirement #5 using a key_triggered_button that responds to the 'c' key.
+         this.key_triggered_button("Rotate", ["c"], () => {
+            // TODO:  Requirement 3d:  Set a flag here that will toggle your swaying motion on and off.
+            this.RotationFlag ^= 1;
+        });
     }
 
     display(context, program_state) {
@@ -74,17 +78,22 @@ export class Assignment2 extends Scene {
         program_state.lights = [new Light(light_position, color(1, 1, 1, 1), 1000)];
 
         let t = program_state.animation_time / 1000, dt = program_state.animation_delta_time / 1000;
-        let model_transform = Mat4.identity();
+        // let model_transform = Mat4.identity();
 
         // TODO:  Draw the required boxes. Also update their stored matrices.
         //this.shapes.axis.draw(context, program_state, model_transform, this.materials.phong.override({color: hex_color("#ffff00")}));
-        this.box_1.transform = Mat4.identity().times( 
-                                    Mat4.translation(-2, 0, 0));
+        /* box 1 */
+        const angle_1 = 30*2*Math.PI/60;
+        this.box_1.transform = Mat4.identity();
+        this.box_1.transform = this.box_1.transform.times(Mat4.translation(-2, 0, 0));
+        if (this.RotationFlag) this.box_1.transform = this.box_1.transform.times(Mat4.rotation(angle_1*t, 1, 0, 0)); 
         this.shapes.box_1.draw(context, program_state, this.box_1.transform, this.materials.text );
 
         /* box 2 */
-        this.box_2.transform = Mat4.identity().times(
-                                    Mat4.translation(2, 0, 0));
+        const angle_2 = 20*2*Math.PI/60;
+        this.box_2.transform = Mat4.identity();
+        if (this.RotationFlag) this.box_2.transform = this.box_2.transform.times(Mat4.rotation(angle_2*t, 0, 1, 0)); 
+        this.box_2.transform = this.box_2.transform.times(Mat4.translation(2, 0, 0));
         this.shapes.box_2.draw(context, program_state, this.box_2.transform, this.materials.star );
     }
 }
