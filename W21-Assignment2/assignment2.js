@@ -24,6 +24,7 @@ export class Assignment2 extends Scene {
             axis: new Axis_Arrows()
         }
         console.log(this.shapes.box_1.arrays.texture_coord)
+        //this.shapes.box_2.arrays.texture_coords = this.shapes.box_2.arrays.texture_coord.forEach(p => p.scale_by(2));
 
 
         // TODO:  Create the materials required to texture both cubes with the correct images and settings.
@@ -38,8 +39,20 @@ export class Assignment2 extends Scene {
                 ambient: .5, diffusivity: 0.1, specularity: 0.1,
                 texture: new Texture("assets/stars.png")
             }),
+            star: new Material(new Textured_Phong(), {
+                color: color(1, 1, 1, 1),
+                ambient: .6, diffusivity: 0.2, specularity: 0.2,
+                texture: new Texture("assets/stars.png")
+            }),
+            text: new Material(new Textured_Phong(), {
+                color: color(0, 0, 1, 1),
+                ambient: .4, diffusivity: 0.2, specularity: 0.3,
+                texture: new Texture("assets/text.png")
+            }),
         }
-
+        
+        this.box_1 = {};
+        this.box_2 = {};
         this.initial_camera_location = Mat4.look_at(vec3(0, 10, 20), vec3(0, 0, 0), vec3(0, 1, 0));
     }
 
@@ -64,7 +77,15 @@ export class Assignment2 extends Scene {
         let model_transform = Mat4.identity();
 
         // TODO:  Draw the required boxes. Also update their stored matrices.
-        this.shapes.axis.draw(context, program_state, model_transform, this.materials.phong.override({color: hex_color("#ffff00")}));
+        //this.shapes.axis.draw(context, program_state, model_transform, this.materials.phong.override({color: hex_color("#ffff00")}));
+        this.box_1.transform = Mat4.identity().times( 
+                                    Mat4.translation(-2, 0, -5));
+        this.shapes.box_1.draw(context, program_state, this.box_1.transform, this.materials.star );
+
+        /* box 2 */
+        this.box_2.transform = Mat4.identity().times(
+                                    Mat4.translation(2, 0, -5));
+        this.shapes.box_2.draw(context, program_state, this.box_2.transform, this.materials.text );
     }
 }
 
