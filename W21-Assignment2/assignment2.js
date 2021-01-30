@@ -60,6 +60,8 @@ export class Assignment2 extends Scene {
         this.box_1 = {};
         this.box_2 = {};
         this.extra = {};
+        this.angle_1 = 0;
+        this.angle_2 = 0;
         this.initial_camera_location = Mat4.look_at(vec3(0, 10, 20), vec3(0, 0, 0), vec3(0, 1, 0));
     }
 
@@ -89,18 +91,24 @@ export class Assignment2 extends Scene {
 
         // TODO:  Draw the required boxes. Also update their stored matrices.
         //this.shapes.axis.draw(context, program_state, model_transform, this.materials.phong.override({color: hex_color("#ffff00")}));
+        if (this.RotationFlag) {
+            this.angle_1 += dt * Math.PI;
+            this.angle_2 += dt * Math.PI * 2 / 3;
+        }
         /* box 1 */
-        const angle_1 = 30*2*Math.PI/60;
+        //const angle_1 = 30*2*Math.PI/60;
         this.box_1.transform = Mat4.identity();
         this.box_1.transform = this.box_1.transform.times(Mat4.translation(-2, 0, 0));
-        if (this.RotationFlag) this.box_1.transform = this.box_1.transform.times(Mat4.rotation(angle_1*t, 1, 0, 0)); 
+        this.box_1.transform = this.box_1.transform.times(Mat4.rotation(this.angle_1, 1, 0, 0));
+        //if (this.RotationFlag) this.box_1.transform = this.box_1.transform.times(Mat4.rotation(angle_1*t, 1, 0, 0)); 
         this.shapes.box_1.draw(context, program_state, this.box_1.transform, this.materials.text );
 
         /* box 2 */
-        const angle_2 = 20*2*Math.PI/60;
+        //const angle_2 = 20*2*Math.PI/60;
         this.box_2.transform = Mat4.identity();
-        if (this.RotationFlag) this.box_2.transform = this.box_2.transform.times(Mat4.rotation(angle_2*t, 0, 1, 0)); 
+        //if (this.RotationFlag) this.box_2.transform = this.box_2.transform.times(Mat4.rotation(angle_2*t, 0, 1, 0)); 
         this.box_2.transform = this.box_2.transform.times(Mat4.translation(2, 0, 0));
+        this.box_2.transform = this.box_2.transform.times(Mat4.rotation(this.angle_2, 0, 1, 0));
         this.shapes.box_2.draw(context, program_state, this.box_2.transform, this.materials.star );
 
         /* extra_credit */
