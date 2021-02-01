@@ -174,13 +174,13 @@ const ExtraCredit = defs.ExtraCredit =
                 .times(Mat4.translation(0, 2, 0)));
             let cube_transform = {};
             for(var i = -1; i <= 1; i++) {
-               for (var k = -1; k <= 1; k++) {
+               for (var j = -1; j <= 1; j++) {
                   cube_transform = Mat4.identity().times(Mat4.scale(0.4, 0.4, 0.4));
-                  for(var c = 0; c < 8; c++) {
+                  for(var k = 0; k < 8; k++) {
                     cube_transform = cube_transform
                       .times(Mat4.scale(1, 1, 1))
-                      .times(Mat4.rotation(i*5, 0, 2, k+0.5))
-                      .times(Mat4.translation(i, 2, k));
+                      .times(Mat4.rotation(i*5, 0, 2, j+0.5))
+                      .times(Mat4.translation(i, 2, j));
                     Cube.insert_transformed_copy_into( this, [], cube_transform );
                   }
                }
