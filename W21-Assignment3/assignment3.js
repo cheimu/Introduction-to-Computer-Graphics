@@ -348,7 +348,7 @@ class Ring_Shader extends Shader {
         // TODO:  Complete the main function of the fragment shader (Extra Credit Part II).
         return this.shared_glsl_code() + `
         void main(){
-            gl_FragColor = vec4(0.5, 0.3, 0.1, 5.0 * sin(30.0 * distance(center, point_position)));
+            gl_FragColor = vec4(0.5, 0.3, 0.1, sin(30.0 * distance(center, point_position)));
         }`;
     }
 }
