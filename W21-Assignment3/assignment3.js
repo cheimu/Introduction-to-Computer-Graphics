@@ -44,11 +44,8 @@ export class Assignment3 extends Scene {
                 {ambient: 0, diffusivity: .3, specularity: 1, color: color(0,1,1,1)}),
             planet3: new Material(new defs.Phong_Shader(),
                 {ambient: 0, diffusivity: 1, specularity: 1, color: color(0.6,0.4,0,1)}),
-            // FIX ME
-            planet3r: new Material(new defs.Phong_Shader(),
+            planet3r: new Material(new Ring_Shader(),
                 {ambient: 0, diffusivity: 1, specularity: 1, color: color(0.6,0.4,0,1)}),
-//             planet3r: new Material(new Ring_Shader(),
-//                 {ambient: 0, diffusivity: 1, specularity: 1, color: color(0.6,0.4,0,1)}),
             planet4: new Material(new defs.Phong_Shader(),
                 {ambient: 0, diffusivity: 1, specularity: 1, color: color(0.3,0.4,0.6,1)}),
             moon: new Material(new defs.Phong_Shader(),
@@ -123,7 +120,6 @@ export class Assignment3 extends Scene {
         this.shapes.planet2.draw(context, program_state, planet2_transform, planet2_material);
         this.planet_2 = planet2_transform;
 
-       
         // p3
         let planet3_transform = model_transform
             .times(Mat4.rotation(0.3*t, 0, 1, 0))
@@ -137,7 +133,6 @@ export class Assignment3 extends Scene {
         this.planet_3 = planet3_transform;
         this.ring = ring_transform;
        
-            
         // p4
         let planet4_transform = model_transform
             .times(Mat4.rotation(0.2*t, 0, 1, 0)) 
@@ -320,6 +315,8 @@ class Ring_Shader extends Shader {
             PCM = P.times(C).times(M);
         context.uniformMatrix4fv(gpu_addresses.projection_camera_model_transform, false,
             Matrix.flatten_2D_to_1D(PCM.transposed()));
+        context.uniformMatrix4fv(gpu_addresses.model_transform, false, 
+            Matrix.flatten_2D_to_1D(model_transform.transposed()));
     }
 
     shared_glsl_code() {
@@ -340,7 +337,9 @@ class Ring_Shader extends Shader {
         uniform mat4 projection_camera_model_transform;
         
         void main(){
-          
+            gl_Position = projection_camera_model_transform * vec4(position, 1.0);
+            point_position = model_transform * vec4(position, 1.0);
+            center = model_transform * vec4(0.0,0.0,0.0,1.0);
         }`;
     }
 
@@ -349,7 +348,7 @@ class Ring_Shader extends Shader {
         // TODO:  Complete the main function of the fragment shader (Extra Credit Part II).
         return this.shared_glsl_code() + `
         void main(){
-          
+            gl_FragColor = vec4(0.5, 0.3, 0.1, 5.0 * sin(30.0 * distance(center, point_position)));
         }`;
     }
 }
