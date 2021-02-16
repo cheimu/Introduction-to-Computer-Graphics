@@ -37,9 +37,9 @@ export class Assignment3 extends Scene {
             sun: new Material(new defs.Phong_Shader(),
                 {ambient: 1, diffusivity: 1, color: hex_color("#ffffff")}), //same as test
             planet1: new Material(new defs.Phong_Shader(),
-                {ambient: 0, diffusivity: 1, specularity: 0, color: color(.5,.5,0.6,1)}),
+                {ambient: 0, diffusivity: 1, specularity: 0, color: color(0.5,0.5,0.6,1)}),
             planet2: new Material(new defs.Phong_Shader(),
-                {ambient: 0, diffusivity: .3, specularity: 1, color: color(0.05,0.4,0.2,1)}),
+                {ambient: 0, diffusivity: .3, specularity: 1, color: color(0.1,0.4,0.2,1)}),
             planet2g: new Material(new Gouraud_Shader(),
                 {ambient: 0, diffusivity: .3, specularity: 1, color: color(0,1,1,1)}),
             planet3: new Material(new defs.Phong_Shader(),
@@ -47,9 +47,9 @@ export class Assignment3 extends Scene {
             planet3r: new Material(new Ring_Shader(),
                 {ambient: 0, diffusivity: 1, specularity: 1, color: color(0.6,0.4,0,1)}),
             planet4: new Material(new defs.Phong_Shader(),
-                {ambient: 0, diffusivity: 1, specularity: 1, color: color(0.3,0.4,0.6,1)}),
+                {ambient: 0, diffusivity: 1, specularity: 1, color: color(0.3,0.4,1,1)}),
             moon: new Material(new defs.Phong_Shader(),
-                {ambient: 0, diffusivity: 1, specularity: 1, color: color(0.3,0.2,1,1)}),
+                {ambient: 0, diffusivity: 1, specularity: 1, color: color(0.1,0.4,0.2,1)}),
             
 
         }
@@ -135,12 +135,12 @@ export class Assignment3 extends Scene {
        
         // p4
         let planet4_transform = model_transform
-            .times(Mat4.rotation(0.2*t, 0, 1, 0)) 
+            .times(Mat4.rotation(0.5*t, 0, 1, 0)) 
             .times(Mat4.translation(18,0,0));
         let moon_transform = planet4_transform
-            .times(Mat4.rotation(0.5*t, 0,1,0))
+            .times(Mat4.rotation(t, 0,1,0))
             .times(Mat4.translation(2,0,0))
-            .times(Mat4.rotation(0.5*t, 0,1,0)); 
+            .times(Mat4.rotation(t, 0,1,0)); 
         this.shapes.planet4.draw(context, program_state, planet4_transform, this.materials.planet4);
         this.shapes.moon.draw(context, program_state, moon_transform, this.materials.moon);
         this.planet_4 = planet4_transform;
