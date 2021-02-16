@@ -44,8 +44,11 @@ export class Assignment3 extends Scene {
                 {ambient: 0, diffusivity: .3, specularity: 1, color: color(0,1,1,1)}),
             planet3: new Material(new defs.Phong_Shader(),
                 {ambient: 0, diffusivity: 1, specularity: 1, color: color(0.6,0.4,0,1)}),
-            planet3r: new Material(new Ring_Shader(),
+            // FIX ME
+            planet3r: new Material(new defs.Phong_Shader(),
                 {ambient: 0, diffusivity: 1, specularity: 1, color: color(0.6,0.4,0,1)}),
+//             planet3r: new Material(new Ring_Shader(),
+//                 {ambient: 0, diffusivity: 1, specularity: 1, color: color(0.6,0.4,0,1)}),
             planet4: new Material(new defs.Phong_Shader(),
                 {ambient: 0, diffusivity: 1, specularity: 1, color: color(0.3,0.4,0.6,1)}),
             moon: new Material(new defs.Phong_Shader(),
@@ -107,7 +110,7 @@ export class Assignment3 extends Scene {
             .times(Mat4.translation(5,0,0))
             .times(Mat4.rotation(0.5*t, 0, 1, 0));
         this.shapes.planet1.draw(context, program_state, planet1_transform, this.materials.planet1);
-        this.planet1 = planet1_transform;
+        this.planet_1 = planet1_transform;
 
 
        
@@ -118,7 +121,7 @@ export class Assignment3 extends Scene {
             .times(Mat4.rotation(0.5*t, 0, 1, 0));
         var planet2_material = (Math.floor(t)%2==1)? this.materials.planet2g : this.materials.planet2; 
         this.shapes.planet2.draw(context, program_state, planet2_transform, planet2_material);
-        this.planet2 = planet2_transform;
+        this.planet_2 = planet2_transform;
 
        
         // p3
@@ -131,7 +134,7 @@ export class Assignment3 extends Scene {
             .times(Mat4.scale(4, 4, 1));
         this.shapes.planet3.draw(context, program_state, planet3_transform, this.materials.planet3);
         this.shapes.torus2.draw(context, program_state, ring_transform, this.materials.planet3r);
-        this.planet3 = planet3_transform;
+        this.planet_3 = planet3_transform;
         this.ring = ring_transform;
        
             
@@ -145,10 +148,16 @@ export class Assignment3 extends Scene {
             .times(Mat4.rotation(0.5*t, 0,1,0)); 
         this.shapes.planet4.draw(context, program_state, planet4_transform, this.materials.planet4);
         this.shapes.moon.draw(context, program_state, moon_transform, this.materials.moon);
-        this.planet4 = planet4_transform;
+        this.planet_4 = planet4_transform;
         this.moon = moon_transform;
      
-
+        if(this.attached) {
+            const desired = Mat4.inverse(this.attached().times(Mat4.translation(0, 0, 5)));
+            const blend_factor = .97;
+            const current = desired.map((x, i) => Vector.from(program_state.camera_transform[i]).mix(x, blend_factor))
+            var state = (this.attached() != this.initial_camera_location)? current : this.initial_camera_location;
+            program_state.set_camera(state);
+        }
     }
 }
 
