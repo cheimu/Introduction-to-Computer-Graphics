@@ -105,7 +105,7 @@ export class Assignment3 extends Scene {
         let planet1_transform = model_transform
             .times(Mat4.rotation(t, 0, 1, 0)) 
             .times(Mat4.translation(5,0,0))
-            .times(Mat4.rotation(0.5*t, 0, 1, 0));
+            .times(Mat4.rotation(0.6*t, 0, 1, 0));
         this.shapes.planet1.draw(context, program_state, planet1_transform, this.materials.planet1);
         this.planet_1 = planet1_transform;
 
@@ -115,7 +115,7 @@ export class Assignment3 extends Scene {
         let planet2_transform = model_transform
             .times(Mat4.rotation(0.5*t, 0, 1, 0)) 
             .times(Mat4.translation(8,0,0))
-            .times(Mat4.rotation(0.5*t, 0, 1, 0));
+            .times(Mat4.rotation(0.4*t, 0, 1, 0));
         var planet2_material = (Math.floor(t)%2==1)? this.materials.planet2g : this.materials.planet2; 
         this.shapes.planet2.draw(context, program_state, planet2_transform, planet2_material);
         this.planet_2 = planet2_transform;
@@ -124,8 +124,8 @@ export class Assignment3 extends Scene {
         let planet3_transform = model_transform
             .times(Mat4.rotation(0.3*t, 0, 1, 0))
             .times(Mat4.translation(11,0,0))
-            .times(Mat4.scale(0.8, 0.8, 0.8))
-            .times(Mat4.rotation(0.4*t, 1, 0, 0));
+            .times(Mat4.scale(0.7, 0.7, 0.7))
+            .times(Mat4.rotation(0.3*t, 1, 0, 0));
         let ring_transform = planet3_transform
             .times(Mat4.scale(4, 4, 1));
         this.shapes.planet3.draw(context, program_state, planet3_transform, this.materials.planet3);
